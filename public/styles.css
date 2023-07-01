@@ -1,0 +1,35 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+.wrapper{
+    display: grid;
+    grid-template-columns: 200px 200px 200px;
+    grid-template-rows: 200px 200px 200px;
+    margin: auto;
+}
+
+.square{
+    height : 200px;
+    width: 200px;
+    border-left: 2px solid black;
+    border-top: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 150px;
+    transition: all ease-in;
+    transition-duration: 0.3s;
+}
+
+.square:active{
+    background-color: rgb(159, 167, 167);
+}
