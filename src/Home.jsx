@@ -2,29 +2,44 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Square from "./components/Square";
 import { Patterns } from "./components/Patterns";
+import Result from "./Result";
 
 function Home() {
-  const [state, setState] = useState(["", "", "", "", "", "", "", "", ""]);
+  const [display, setDisplay] = useState("");
   const [player, setPlayer] = useState("O");
   const [result, setResult] = useState({ winner: "none", status: "none" });
+  const [currentClass, setCurrentClass] = useState([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
 
   useEffect(() => {
     checkWin();
     checkTie();
     player === "X" ? setPlayer("O") : setPlayer("X");
-  }, [state]);
+  }, [currentClass]);
 
   useEffect(() => {
-    if (result.status != "none")
-      alert("Game finished! winner :" + result.winner);
-    restartGame();
+    if (result.status !== "none") {
+      setDisplay("show");
+    }
+    // restartGame();
   }, [result]);
 
   function handleSquareValue(boxId) {
-    // console.log(boxId);
-    setState(
-      state.map((val, idx) => {
-        if (idx === boxId && val === "") return player;
+    setCurrentClass(
+      currentClass.map((val, idx) => {
+        if (idx === boxId && val === "") {
+          if (player === "X") return "x";
+          return "circle";
+        }
         return val;
       })
     );
@@ -32,11 +47,18 @@ function Home() {
 
   const checkWin = () => {
     Patterns.forEach((curPattern) => {
-      let firstPlayer = state[curPattern[0]];
+      let firstPlayer;
+      if (currentClass[curPattern[0]] === "x") firstPlayer = "X";
+      else if (currentClass[curPattern[0]] === "circle") firstPlayer = "O";
+      else firstPlayer = "";
       if (firstPlayer === "") return;
-      let foundWinner = true;
+      let foundWinner = true,
+        curPlayer;
       curPattern.forEach((idx) => {
-        if (state[idx] != firstPlayer) foundWinner = false;
+        if (currentClass[idx] === "x") curPlayer = "X";
+        else if (currentClass[idx] === "circle") curPlayer = "O";
+        else curPlayer = "";
+        if (curPlayer !== firstPlayer) foundWinner = false;
       });
       if (foundWinner) {
         setResult({ winner: player, status: "Won" });
@@ -46,67 +68,73 @@ function Home() {
 
   const checkTie = () => {
     let filled = true;
-    state.forEach((square) => {
+    currentClass.forEach((square) => {
       if (square === "") filled = false;
     });
     if (filled) {
-      setResult({ winner: "No one", status: "Tie" });
+      setResult({ winner: "", status: "Tie" });
     }
   };
 
   const restartGame = () => {
-    setState(["", "", "", "", "", "", "", "", ""]);
+    setCurrentClass(["", "", "", "", "", "", "", "", ""]);
     setPlayer("O");
+    setDisplay("");
   };
 
-  const style1 = {
-    border: 0,
-  };
-  const style2 = {
-    borderLeft: 0,
-  };
-  const style3 = {
-    borderTop: 0,
-  };
   return (
-    <div className="wrapper">
-      <Square
-        style={style1}
-        val={state[0]}
-        chooseSquare={() => handleSquareValue(0)}
+    <div>
+      <div className={`wrapper ${player === "O" ? "circle" : "x"}`}>
+        <Square
+          classType={currentClass[0]}
+          chooseSquare={() => handleSquareValue(0)}
+        />
+
+        <Square
+          classType={currentClass[1]}
+          chooseSquare={() => handleSquareValue(1)}
+        />
+
+        <Square
+          classType={currentClass[2]}
+          chooseSquare={() => handleSquareValue(2)}
+        />
+
+        <Square
+          classType={currentClass[3]}
+          chooseSquare={() => handleSquareValue(3)}
+        />
+
+        <Square
+          classType={currentClass[4]}
+          chooseSquare={() => handleSquareValue(4)}
+        />
+
+        <Square
+          classType={currentClass[5]}
+          chooseSquare={() => handleSquareValue(5)}
+        />
+
+        <Square
+          classType={currentClass[6]}
+          chooseSquare={() => handleSquareValue(6)}
+        />
+
+        <Square
+          classType={currentClass[7]}
+          chooseSquare={() => handleSquareValue(7)}
+        />
+
+        <Square
+          classType={currentClass[8]}
+          chooseSquare={() => handleSquareValue(8)}
+        />
+      </div>
+      <Result
+        classType={display}
+        winner={result.winner}
+        handleRestart={() => restartGame()}
       />
-
-      <Square
-        style={style3}
-        val={state[1]}
-        chooseSquare={() => handleSquareValue(1)}
-      />
-
-      <Square
-        style={style3}
-        val={state[2]}
-        chooseSquare={() => handleSquareValue(2)}
-      />
-
-      <Square
-        style={style2}
-        val={state[3]}
-        chooseSquare={() => handleSquareValue(3)}
-      />
-
-      <Square val={state[4]} chooseSquare={() => handleSquareValue(4)} />
-
-      <Square val={state[5]} chooseSquare={() => handleSquareValue(5)} />
-
-      <Square
-        val={state[6]}
-        style={style2}
-        chooseSquare={() => handleSquareValue(6)}
-      />
-
-      <Square val={state[7]} chooseSquare={() => handleSquareValue(7)} />
-
-      <Square val={state[8]} chooseSquare={() => handleSquareValue(8)} />
     </div>
   );
 }
